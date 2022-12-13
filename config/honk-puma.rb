@@ -1,6 +1,10 @@
 # For development, load the .env files now so we can use their settings
-if require('dotenv')
-  Dotenv.load
+begin
+  if require('dotenv')
+    Dotenv.load
+  end
+rescue LoadError
+  # Ignored
 end
 
 rackup DefaultRackup
