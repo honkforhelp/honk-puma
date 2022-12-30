@@ -70,7 +70,9 @@ before_fork do
   disconnect_redis.(::StandaloneRedis.connect) if defined?(::StandaloneRedis)
   disconnect_redis.(::Resque.redis) if defined?(::Resque)
   disconnect_redis.(::Stoplight::Light.default_data_store.instance_variable_get(:@redis)) if defined?(::Stoplight)
-  disconnect_redis.(::ActionCable.server.pubsub.redis_connection_for_subscriptions) if defined?(::ActionCable) && ::ActionCable.server.pubsub.kind_of?(::ActionCable::SubscriptionAdapter::Redis)
+  if defined?(::ActionCable) && defined?(::ActionCable::SubscriptionAdapter::Redis) && ::ActionCable.server.pubsub && ::ActionCable.server.pubsub.kind_of?(::ActionCable::SubscriptionAdapter::Redis)
+    disconnect_redis.(::ActionCable.server.pubsub.redis_connection_for_subscriptions)
+  end
   disconnect_redis.($redis) if defined?($redis)
 
   if defined?(::Rails) && ::Rails.cache.respond_to?(:redis)
