@@ -33,3 +33,12 @@ This gem reads the following env variables and configures puma with them:
   - app preloading is disabled
   - fork-worker mode is never enabled
   - nakayoshi fork mode is never enabled
+
+### Development
+
+To build:
+
+```shell
+gem build honk-puma
+```
+
