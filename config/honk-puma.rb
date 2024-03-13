@@ -7,7 +7,6 @@ rescue LoadError
   # Ignored
 end
 
-rackup DefaultRackup
 port ENV.fetch('PORT', '3000')
 workers ENV.fetch('PUMA_MAX_WORKERS', ENV.fetch('WEB_CONCURRENCY', '3'))
 worker_culling_strategy :oldest
