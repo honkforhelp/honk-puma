@@ -21,14 +21,6 @@ puma_fork_worker_mode = !dev && ENV.fetch("PUMA_ENABLE_FORK_WORKER_MODE", "0") =
 
 preload_app!(!dev && !puma_fork_worker_mode)
 
-##
-# nakayoshi_fork:
-# When enabled, ::Puma will GC 4 times before forking workers. If available (Ruby 2.7+), we will also call GC.compact. Not recommended for non-MRI Rubies.
-#
-# Based on the work of Koichi Sasada and Aaron Patterson, this option may decrease memory utilization of preload-enabled cluster-mode Pumas. It will also increase time to boot and fork. See your logs for details on how much time this adds to your boot process. For most apps, it will be less than one second.
-#
-nakayoshi_fork(true) if !dev && ENV.fetch("PUMA_DISABLE_NAKAYOSHI_FORK", "0") != "1"
-
 if puma_fork_worker_mode
   ##
   # Puma 5 introduces an experimental new cluster-mode configuration option, fork_worker (--fork-worker from the CLI). This mode causes Puma to fork additional workers from worker 0, instead of directly from the master process:
