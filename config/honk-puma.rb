@@ -42,10 +42,24 @@ if puma_fork_worker_mode
   fork_worker(restart_randomness)
 end
 
-using_barnes = begin; require 'barnes'; rescue LoadError; false; end
+begin
+  puts "Trying to load Barnes for Enhanced Language Metrics on Heroku..."
+  require 'barnes'
+  puts "Loading Barnes succeeded?"
+  using_barnes = true
+rescue LoadError
+  puts "Loading Barnes definitely failed."
+  using_barnes = false
+end
 
 before_fork do
-  Barnes.start if using_barnes
+  puts "Checking for Barnes... using_barnes=#{using_barnes} defined?(Barnes)=#{defined?(Barnes)}"
+  if using_barnes || defined?(Barnes)
+    puts "Starting Barnes..."
+    Barnes.start
+  else
+    puts "Skipping Barnes"
+  end
 
   # we should just need to disconnect redis and it will reconnect on use
   disconnect_redis = -> (redis) {
