@@ -42,7 +42,11 @@ if puma_fork_worker_mode
   fork_worker(restart_randomness)
 end
 
+using_barnes = begin; require 'barnes'; rescue LoadError; false; end
+
 before_fork do
+  Barnes.start if using_barnes
+
   # we should just need to disconnect redis and it will reconnect on use
   disconnect_redis = -> (redis) {
     if redis.respond_to?(:redis)
