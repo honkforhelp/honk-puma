@@ -7,7 +7,6 @@ rescue LoadError
   # Ignored
 end
 
-port ENV.fetch('PORT', '3000')
 workers ENV.fetch('PUMA_MAX_WORKERS', ENV.fetch('WEB_CONCURRENCY', '3'))
 worker_culling_strategy :oldest
 wait_for_less_busy_worker(0.01)
@@ -15,6 +14,14 @@ force_shutdown_after 25
 threads 1, 1 # NO Multithreading
 
 dev = ENV.fetch("RAILS_ENV", 'development') == 'development'
+
+# Explicitly bind to both 0.0.0.0 and localhost (127.0.0.1) in development
+if dev
+  bind "tcp://127.0.0.1:#{ENV.fetch('PORT', '3000')}"
+else
+  # In non-development environments, use the standard PORT configuration
+  port ENV.fetch('PORT', '3000')
+end
 
 # This is broken with most our apps right now
 puma_fork_worker_mode = !dev && ENV.fetch("PUMA_ENABLE_FORK_WORKER_MODE", "0") == "1"

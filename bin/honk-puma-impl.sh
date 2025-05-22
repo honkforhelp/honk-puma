@@ -26,6 +26,23 @@ fi
 
 CONTROL_TOKEN="$RANDOM-$RANDOM-$RANDOM"
 
+# Check if running on macOS and set fork safety environment variable if needed
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Extract major version number
+  if command -v sw_vers >/dev/null 2>&1; then
+    MACOS_VERSION=$(sw_vers -productVersion | cut -d. -f1)
+    # Check if macOS version is 10.14 (Mojave) or later (where the issue occurs)
+    if [[ $MACOS_VERSION -ge 10 ]]; then
+      echo "Detected macOS $MACOS_VERSION, setting OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES"
+      export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+    fi
+  else
+    # If sw_vers not available but we know it's macOS, set the variable to be safe
+    echo "Detected macOS, setting OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES"
+    export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+  fi
+fi
+
 if [[ "$DYNO" = "" ]]; then
   # Don't bother running the control server etc. if we're not on Heroku,
   # if you run more than one project with this Gem locally you'll get into a problem
