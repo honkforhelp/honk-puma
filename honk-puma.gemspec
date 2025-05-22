@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name        = "honk-puma"
-  spec.version     = "0.3.3"
+  spec.version     = "0.3.4"
   spec.summary     = "A to run Puma the same everywhere."
   spec.description = <<-TEXT
 This runs Puma web server with a status logging agent process in a consistent fashion, suitable
