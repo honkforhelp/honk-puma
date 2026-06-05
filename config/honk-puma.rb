@@ -19,8 +19,8 @@ dev = ENV.fetch("RAILS_ENV", 'development') == 'development'
 if dev
   bind "tcp://127.0.0.1:#{ENV.fetch('PORT', '3000')}"
 else
-  # In non-development environments, use the standard PORT configuration
-  port ENV.fetch('PORT', '3000')
+  # Explicitly bind to 0.0.0.0 — Puma 8+ defaults to :: (IPv6) which may not work on all platforms
+  bind "tcp://0.0.0.0:#{ENV.fetch('PORT', '3000')}"
 end
 
 # This is broken with most our apps right now
